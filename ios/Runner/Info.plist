@@ -4,6 +4,8 @@
 <dict>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
+	<key>NSUserTrackingUsageDescription</key>
+    <string>We would like to send you notifications</string>
 	<key>CFBundleDisplayName</key>
 	<string>Finance Digest</string>
 	<key>CFBundleExecutable</key>

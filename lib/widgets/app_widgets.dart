@@ -4,13 +4,13 @@ import '../utils/app_colors.dart';
 
 class AppWidgets {
   static Widget titleText(Size size, String title, double fontSize,
-      FontWeight fontWeight, Color color) {
+      FontWeight fontWeight, Color color,{TextAlign textAlign = TextAlign.start}) {
     return Container(
       //width: size.width,
       margin: EdgeInsets.symmetric(vertical: size.height * 0.01),
       child: Text(
         title,
-        textAlign: TextAlign.start,
+        textAlign: textAlign,
         style: TextStyle(
           color: color,
           fontWeight: fontWeight,

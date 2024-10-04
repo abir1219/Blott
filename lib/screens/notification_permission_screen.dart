@@ -1,4 +1,5 @@
 import 'package:finance_digest/widgets/app_widgets.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -6,6 +7,7 @@ import 'package:gap/gap.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 import '../utils/app_colors.dart';
+import 'notification_dialog.dart';
 
 class NotificationPermissionScreen extends StatefulWidget {
   const NotificationPermissionScreen({super.key});
@@ -33,12 +35,18 @@ class _NotificationPermissionScreenState
       PermissionStatus status = await Permission.notification.request();
 
       if (status.isGranted) {
-        print("Notification permission granted");
+        if (kDebugMode) {
+          print("Notification permission granted");
+        }
       } else {
-        print("Notification permission denied");
+        if (kDebugMode) {
+          print("Notification permission denied");
+        }
       }
     } else {
-      print("Notification permission already granted");
+      if (kDebugMode) {
+        print("Notification permission already granted");
+      }
     }
   }
 
@@ -76,14 +84,17 @@ class _NotificationPermissionScreenState
                     size,
                     "Allow notifications to stay in the loop with your payments, requests and groups.",
                     16,
-                    FontWeight.w500,
+                    textAlign: TextAlign.center,
+                    FontWeight.w400,
                     AppColors.APP_SUBTITLE_TEXT_COLOUR)
               ],
             )),
             AppWidgets.customButton(
               size,
               "Continue",
-              () => _requestNotificationPermission(),
+              () => showDialog(context: context, builder: (BuildContext context) {
+                return const NotificationDialog();
+              })//_requestNotificationPermission(),
             ),
             Gap(size.height * 0.01)
           ],

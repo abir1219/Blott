@@ -3,6 +3,7 @@ import 'package:finance_digest/screens/splash_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import '../screens/login_screen.dart';
+import '../screens/news_list_screen.dart';
 import 'app_pages.dart';
 
 class AppRouters {
@@ -26,6 +27,12 @@ class AppRouters {
           path: AppPages.NOTIFICATION_PERMISSION,
           pageBuilder: (context, state) => const MaterialPage(
             child: NotificationPermissionScreen(),
+          ),
+        ),
+        GoRoute(
+          path: AppPages.NEWS_LIST,
+          pageBuilder: (context, state) => const MaterialPage(
+            child: NewsListScreen(),
           ),
         ),
       ]);
