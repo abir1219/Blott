@@ -4,7 +4,7 @@ import '../utils/app_colors.dart';
 
 class AppWidgets {
   static Widget titleText(Size size, String title, double fontSize,
-      FontWeight fontWeight, Color color,{TextAlign textAlign = TextAlign.start}) {
+      FontWeight fontWeight, Color color,{TextAlign textAlign = TextAlign.start,String fontFamily = "Roboto"}) {
     return Container(
       //width: size.width,
       margin: EdgeInsets.symmetric(vertical: size.height * 0.01),
@@ -13,6 +13,7 @@ class AppWidgets {
         textAlign: textAlign,
         style: TextStyle(
           color: color,
+          fontFamily: fontFamily,
           fontWeight: fontWeight,
           fontSize: fontSize,
         ),

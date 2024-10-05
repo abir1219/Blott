@@ -21,7 +21,7 @@ class MyApp extends StatelessWidget {
       routeInformationParser: AppRouters().routers.routeInformationParser,
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        fontFamily: "Roboto ",
+        fontFamily: "Roboto",
         useMaterial3: true,
       ),
     );

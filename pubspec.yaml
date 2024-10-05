@@ -86,7 +86,13 @@ flutter:
     - family: Roborto
       fonts:
         - asset: assets/fonts/Roboto-Black.ttf
-  #   - family: Schyler
+    - family: Raleway
+      fonts:
+        - asset: assets/fonts/Raleway-Regular.ttf
+    - family: Rubik
+      fonts:
+        - asset: assets/fonts/Rubik-Regular.ttf
+  #   - family: Rubik-Regular
   #     fonts:
   #       - asset: fonts/Schyler-Regular.ttf
   #       - asset: fonts/Schyler-Italic.ttf

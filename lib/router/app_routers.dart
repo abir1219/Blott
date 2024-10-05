@@ -1,3 +1,4 @@
+import 'package:finance_digest/screens/error_screen.dart';
 import 'package:finance_digest/screens/notification_permission_screen.dart';
 import 'package:finance_digest/screens/splash_screen.dart';
 import 'package:flutter/material.dart';
@@ -33,6 +34,12 @@ class AppRouters {
           path: AppPages.NEWS_LIST,
           pageBuilder: (context, state) => const MaterialPage(
             child: NewsListScreen(),
+          ),
+        ),
+        GoRoute(
+          path: AppPages.ERROR,
+          pageBuilder: (context, state) => const MaterialPage(
+            child: ErrorScreen(),
           ),
         ),
       ]);
