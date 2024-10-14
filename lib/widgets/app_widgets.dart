@@ -4,12 +4,18 @@ import '../utils/app_colors.dart';
 
 class AppWidgets {
   static Widget titleText(Size size, String title, double fontSize,
-      FontWeight fontWeight, Color color,{TextAlign textAlign = TextAlign.start,String fontFamily = "Roboto"}) {
+      FontWeight fontWeight, Color color,
+      {TextAlign textAlign = TextAlign.start,
+      String fontFamily = "Roboto",
+      int maxLines = 3,
+      TextOverflow overflow = TextOverflow.ellipsis}) {
     return Container(
       //width: size.width,
       margin: EdgeInsets.symmetric(vertical: size.height * 0.01),
       child: Text(
         title,
+        maxLines: maxLines,
+        overflow: overflow,
         textAlign: textAlign,
         style: TextStyle(
           color: color,

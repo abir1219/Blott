@@ -1,7 +1,20 @@
+import 'dart:io';
+
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:finance_digest/router/app_pages.dart';
 import 'package:finance_digest/utils/app_colors.dart';
+import 'package:finance_digest/utils/app_constants.dart';
+import 'package:finance_digest/utils/enums.dart';
+import 'package:finance_digest/utils/sharedpreference_utils.dart';
 import 'package:finance_digest/widgets/app_widgets.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
+import 'package:go_router/go_router.dart';
+import 'package:intl/intl.dart';
+
+import '../bloc/news/news_bloc.dart';
 
 class NewsListScreen extends StatefulWidget {
   const NewsListScreen({super.key});
@@ -11,6 +24,12 @@ class NewsListScreen extends StatefulWidget {
 }
 
 class _NewsListScreenState extends State<NewsListScreen> {
+  @override
+  void initState() {
+    super.initState();
+    context.read<NewsBloc>().add(FetchNewsEvent());
+  }
+
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.sizeOf(context);
@@ -23,17 +42,49 @@ class _NewsListScreenState extends State<NewsListScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            AppWidgets.titleText(size, "Hey First Name", 32, FontWeight.w600,
+            AppWidgets.titleText(
+                size,
+                "Hey ${SharedPreferencesUtils.getString(AppConstants.FIRST_NAME)}",
+                24,
+                FontWeight.w600,
                 AppColors.APP_WHITE_COLOUR,
                 fontFamily: "Raleway"),
             Gap(size.height * .02),
             Expanded(
-              child: ListView.builder(
-                shrinkWrap: true,
-                itemBuilder: (context, index) {
-                  return _buildNewsContainer(size, index);
+              child: BlocConsumer<NewsBloc, NewsState>(
+                listenWhen: (previous, current) =>
+                    current.apiStatus == ApiStatus.error,
+                listener: (context, state) {
+                  if (state.apiStatus == ApiStatus.error) {
+                    context.go(AppPages.ERROR);
+                  }
                 },
-                itemCount: 10,
+                builder: (context, state) {
+                  switch (state.apiStatus) {
+                    case ApiStatus.loading:
+                      return Center(
+                        child: SizedBox(
+                          height: size.height * 0.03,
+                          width: size.width * 0.06,
+                          child: Platform.isAndroid
+                              ? const CircularProgressIndicator(
+                                  color: AppColors.APP_WHITE_COLOUR,
+                                )
+                              : const CupertinoActivityIndicator(),
+                        ),
+                      );
+                    case ApiStatus.success:
+                      return ListView.builder(
+                        shrinkWrap: true,
+                        itemBuilder: (context, index) {
+                          return _buildNewsContainer(size, index, state);
+                        },
+                        itemCount: state.newsList!.length,
+                      );
+                    default:
+                      return const SizedBox();
+                  }
+                },
               ),
             ),
           ],
@@ -42,46 +93,82 @@ class _NewsListScreenState extends State<NewsListScreen> {
     );
   }
 
-  Widget _buildNewsContainer(
-    Size size,
-    int index,
-  ) {
+  Widget _buildNewsContainer(Size size, int index, NewsState state) {
+    final newsItem = state.newsList![index];
+
     return Container(
       margin: EdgeInsets.symmetric(vertical: size.height * 0.01),
-      height: size.height * 0.18,
+      height: size.height * 0.2,
       color: Colors.transparent,
       child: Row(
         children: [
+          // Image container
           Container(
             margin: EdgeInsets.symmetric(horizontal: size.width * 0.03),
             height: size.height * 0.15,
             width: size.width * 0.28,
-            color: Colors.green,
-            child: Image.network("https://media.istockphoto.com/id/183412466/photo/eastern-bluebirds-male-and-female.jpg?s=612x612&w=0&k=20&c=6_EQHnGedwdjM9QTUF2c1ce7cC3XtlxvMPpU5HAouhc=",fit: BoxFit.fill,),
+            child: CachedNetworkImage(
+                imageUrl: newsItem.image!,
+                fit: BoxFit.fill,
+                progressIndicatorBuilder: (_, url, download) {
+                  return Image.asset(
+                    "assets/images/loader.gif",
+                  );
+                } // Handle errors
+                ),
           ),
+
+          // Text content container
           Expanded(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Padding(
-                  padding: EdgeInsets.only(right: size.width * 0.01),
-                  child: Row(
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: size.width * 0.01),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                // Align text to the start
+                children: [
+                  // Title and datetime row
+                  Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      AppWidgets.titleText(size, "The Economic Times", 12,
-                          FontWeight.w200, AppColors.APP_WHITE_COLOUR,
-                          fontFamily: "Rubik"),
-                      AppWidgets.titleText(size, "12 June 2021", 12,
-                          FontWeight.w200, AppColors.APP_WHITE_COLOUR,
-                          fontFamily: "Rubik")
+                      // Headline text
+                      AppWidgets.titleText(
+                        size,
+                        newsItem.source!,
+                        12,
+                        FontWeight.w200,
+                        AppColors.APP_WHITE_COLOUR,
+                        fontFamily: "Rubik",
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+
+                      // Datetime text
+                      AppWidgets.titleText(
+                        size,
+                        DateFormat('d MMMM yyyy').format(DateTime.fromMillisecondsSinceEpoch(newsItem.datetime! * 1000)),
+                        12,
+                        FontWeight.w200,
+                        AppColors.APP_WHITE_COLOUR,
+                        fontFamily: "Rubik",
+                      ),
                     ],
                   ),
-                ),
-                AppWidgets.titleText(size, "Sensex ekes out small gain, Nifty50 ends flat; 2 Adani stocks rally up to 9% ", 20,
-                    FontWeight.w500, AppColors.APP_WHITE_COLOUR,)
-              ],
+
+                  // Summary text
+                  AppWidgets.titleText(
+                    size,
+                    newsItem.summary!,
+                    14,
+                    FontWeight.w500,
+                    AppColors.APP_WHITE_COLOUR,
+                    maxLines: 4, // Limit to 2 lines for the summary
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ],
+              ),
             ),
-          )
+          ),
         ],
       ),
     );

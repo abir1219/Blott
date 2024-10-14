@@ -1,3 +1,4 @@
+
 import 'package:finance_digest/router/app_pages.dart';
 import 'package:finance_digest/utils/app_colors.dart';
 import 'package:flutter/material.dart';
@@ -5,6 +6,8 @@ import 'package:flutter/services.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 
+import '../utils/app_constants.dart';
+import '../utils/sharedpreference_utils.dart';
 import '../widgets/app_widgets.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -40,7 +43,6 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget build(BuildContext context) {
     var size = MediaQuery.sizeOf(context);
 
-
     return Scaffold(
       body: SafeArea(
         child: Padding(
@@ -65,7 +67,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       size,
                       "First name",
                       _firstNameController,
-                      (value) {
+                          (value) {
                         debugPrint("First name-->$value");
                         _validateForm();
                       },
@@ -74,7 +76,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       size,
                       "Last name",
                       _lastNameController,
-                      (value) {
+                          (value) {
                         debugPrint("Last name-->$value");
                         _validateForm();
                       },
@@ -91,17 +93,22 @@ class _LoginScreenState extends State<LoginScreen> {
             ? AppColors.APP_BUTTON_COLOUR.withOpacity(0.3)
             : AppColors.APP_BUTTON_COLOUR,
         elevation: 0,
-        onPressed: () {
-          if(isButtonActive){
-            context.go(AppPages.NOTIFICATION_PERMISSION);
-          }else{
-
-          }
+        onPressed: () async {
+          if (isButtonActive) {
+            await SharedPreferencesUtils.init();
+            await SharedPreferencesUtils.saveString(
+                AppConstants.FIRST_NAME, _firstNameController.text.trim());
+            await SharedPreferencesUtils.saveString(
+                AppConstants.LAST_NAME, _lastNameController.text.trim());
+            if(mounted){
+              context.go(AppPages.NOTIFICATION_PERMISSION);
+            }
+          } else {}
         },
         shape: const CircleBorder(),
         child: const Icon(
           Icons.arrow_forward_ios_sharp,
-          color: Colors.white,
+          color: AppColors.APP_WHITE_COLOUR,
           size: 20,
         ),
       ),
