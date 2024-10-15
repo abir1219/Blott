@@ -3,8 +3,11 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/foundation.dart';
+import 'package:go_router/go_router.dart';
 import 'package:http/http.dart' as http;
 
+import '../../main.dart';
+import '../../router/app_pages.dart';
 import '../exceptions/app_exceptions.dart';
 import 'base_api_services.dart';
 
@@ -45,6 +48,8 @@ class NetworkApiService implements BaseApiServices {
         dynamic responseJson = jsonDecode(response.body);
         return responseJson;
       case 401:
+        GoRouter.of(navigatorKey.currentContext!).go(AppPages.ERROR);
+        return null;
       case 500:
       case 404:
         throw UnauthorisedException(response.body.toString());
