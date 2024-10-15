@@ -1,4 +1,3 @@
-import 'package:finance_digest/bloc/login/login_bloc.dart';
 import 'package:finance_digest/bloc/news/news_bloc.dart';
 import 'package:finance_digest/repository/news_repository.dart';
 import 'package:finance_digest/router/app_routers.dart';
@@ -13,7 +12,6 @@ void main() {
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
 
