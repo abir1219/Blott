@@ -53,12 +53,13 @@ class _NewsListScreenState extends State<NewsListScreen> {
             Gap(size.height * .02),
             Expanded(
               child: BlocConsumer<NewsBloc, NewsState>(
-                listenWhen: (previous, current) =>
-                    current.apiStatus == ApiStatus.error,
+                listenWhen: (previous, current) {
+                  return current.apiStatus == ApiStatus.error;
+                },
+
                 listener: (context, state) {
-                  if (state.apiStatus == ApiStatus.error) {
-                    context.go(AppPages.ERROR);
-                  }
+                  debugPrint("current.apiStatus==>${state.apiStatus}");
+                  context.go(AppPages.ERROR);
                 },
                 builder: (context, state) {
                   switch (state.apiStatus) {

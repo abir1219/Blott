@@ -29,8 +29,8 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
       debugPrint("DATA--->$newsList");
       emit(state.copyWith(apiStatus: ApiStatus.success,newsList: newsList));
     },).onError((error, stackTrace) {
-      debugPrint("ERROR-->$error");
       emit(state.copyWith(apiStatus: ApiStatus.error,message: "Something went wrong. Please try again later."));
+      debugPrint("ERROR-->$error");
     },);
   }
 }

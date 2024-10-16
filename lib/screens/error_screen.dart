@@ -19,6 +19,7 @@ class _ErrorScreenState extends State<ErrorScreen> {
     var size = MediaQuery.sizeOf(context);
 
     return Scaffold(
+      backgroundColor: Colors.black,
       body: SafeArea(child: Padding(
         padding: EdgeInsets.symmetric(horizontal: size.width * .02),
         child: Column(

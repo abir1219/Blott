@@ -48,8 +48,8 @@ class NetworkApiService implements BaseApiServices {
         dynamic responseJson = jsonDecode(response.body);
         return responseJson;
       case 401:
-        GoRouter.of(navigatorKey.currentContext!).go(AppPages.ERROR);
-        return null;
+        // GoRouter.of(navigatorKey.currentContext!).go(AppPages.ERROR);
+        // return null;
       case 500:
       case 404:
         throw UnauthorisedException(response.body.toString());
